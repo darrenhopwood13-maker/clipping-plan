@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#233a6b">
+<title>instructBrain — Clipping, properly: a seven-day start</title>
+<meta name="description" content="Paid-per-view clipping: the campaign to pick, the real money after fees, and the seven-day start. Prepared for Lola.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* instructBrain tokens, taken from src/styles.css — not eyeballed */
+    --navy: oklch(0.386 0.105 262.6);
+    --navy-deep: oklch(0.323 0.059 262.7);
+    --card: oklch(0.356 0.076 262.6);
+    --card-raised: oklch(0.367 0.1 262.8);
+    --sunken: oklch(0.342 0.091 262.9);
+    --ink: oklch(0.985 0 0);
+    --muted: oklch(0.887 0.011 261.8);
+    --laser: #57FF00;
+    --laser-deep: oklch(0.5566 0.1764 139.3);
+    --laser-soft: rgba(87,255,0,.14);
+    --fail: oklch(0.74 0.2 13);
+    --warn: oklch(0.93 0.16 103);
+    --border: rgba(255,255,255,.14);
+    --border-strong: rgba(87,255,0,.55);
+    --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    --radius: 16px;
+    --shadow: 0 20px 50px -28px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(87,255,0,.10), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(255,255,255,.06), transparent 55%),
+      var(--navy);
+    color:var(--ink);
+    font-family:var(--font-sans);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{width:100%;max-width:760px;margin:0 auto;padding:0 18px 64px}
+  a{color:var(--laser)}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--laser);outline-offset:2px}
+
+  /* progress */
+  .progress{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:12px;
+    padding:10px 18px;
+    background:rgba(30,42,74,.92);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    font-size:13px;font-weight:700;letter-spacing:.02em;
+  }
+  .bar{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+  .bar > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--laser),var(--laser-deep));transition:width .25s ease}
+  .progress b{color:var(--laser);font-variant-numeric:tabular-nums}
+
+  /* masthead */
+  header.mast{padding:34px 0 10px}
+  .wordmark{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+  .wordmark .dot{width:10px;height:10px;border-radius:3px;background:var(--laser);box-shadow:0 0 0 4px var(--laser-soft)}
+  .wordmark span{color:var(--laser)}
+  .wordmark .wm{display:inline-flex;color:var(--laser)}
+  .kicker{margin:22px 0 6px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--laser)}
+  h1{font-family:var(--font-display);font-size:clamp(28px,7.4vw,40px);line-height:1.08;letter-spacing:-.025em;margin:0 0 12px}
+  .standfirst{font-size:16.5px;color:var(--muted);margin:0 0 18px;max-width:60ch}
+  .metabar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+  .pill{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:99px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.04)}
+  .pill.on{border-color:var(--border-strong);color:var(--laser);background:var(--laser-soft)}
+
+  /* cards + sections */
+  section{margin:0 0 30px}
+  h2{font-family:var(--font-display);font-size:20px;letter-spacing:-.015em;margin:0 0 4px;display:flex;align-items:baseline;gap:10px}
+  h2 em{font-style:normal;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--laser);text-transform:uppercase}
+  .lede{margin:0 0 14px;color:var(--muted);font-size:15px}
+  .card{background:linear-gradient(180deg,var(--card-raised),var(--card));border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+
+  .now{border-color:var(--border-strong);background:linear-gradient(180deg,rgba(87,255,0,.10),rgba(87,255,0,.02)),var(--card)}
+  .now .stamp{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--laser);margin-bottom:10px}
+  .now h3{font-family:var(--font-display);font-size:19px;line-height:1.25;margin:0 0 8px}
+  .now p{margin:0 0 12px;font-size:15.5px}
+  .why{font-size:14.5px;color:var(--muted);margin:0}
+
+  .steps{margin:0;padding:0;list-style:none;counter-reset:s}
+  .steps li{counter-increment:s;position:relative;padding:0 0 12px 34px;font-size:15.5px}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:12.5px;font-weight:800;color:#0b1a05;background:var(--laser)}
+
+  .copyrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
+  .url{flex:1;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--sunken);border:1px solid var(--border);border-radius:10px;padding:11px 12px;overflow-wrap:anywhere;color:var(--muted)}
+  button{font-family:var(--font-sans);font-size:13.5px;font-weight:800;border-radius:10px;padding:11px 14px;min-height:44px;cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--ink)}
+  button.green{background:var(--laser);border-color:var(--laser);color:#0b1a05}
+  button:hover{filter:brightness(1.08)}
+
+  /* campaign table */
+  .camps{display:grid;gap:12px}
+  .camp{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:15px}
+  .camp.best{border-color:var(--border-strong);background:linear-gradient(180deg,rgba(87,255,0,.08),transparent),var(--card)}
+  .camp h3{font-family:var(--font-display);font-size:16.5px;margin:0 0 2px;letter-spacing:-.01em}
+  .camp .tag{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--laser)}
+  .row{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}
+  .stat{min-width:86px}
+  .stat .k{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-family:var(--font-display);font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+  .stat .v.green{color:var(--laser)}
+  .note{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+
+  /* calculator */
+  .calc{display:grid;gap:14px}
+  .field{display:grid;gap:6px}
+  label{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  input[type=number],input[type=text],select{
+    font-family:var(--font-sans);font-size:16px;font-weight:600;color:var(--ink);
+    background:var(--sunken);border:1px solid var(--border);border-radius:10px;padding:12px;min-height:48px;width:100%
+  }
+  .out{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+  .out div{background:var(--sunken);border:1px solid var(--border);border-radius:12px;padding:12px}
+  .out .k{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .out .v{font-family:var(--font-display);font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+  .out .v.green{color:var(--laser)}
+
+  /* killers */
+  .kill{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+  .kill li{position:relative;padding-left:26px;font-size:15px}
+  .kill li::before{content:"";position:absolute;left:0;top:7px;width:12px;height:12px;border-radius:3px;background:var(--fail);opacity:.85}
+
+  /* checklist */
+  .day{border-top:1px solid var(--border);padding:14px 0}
+  .day:first-of-type{border-top:0;padding-top:4px}
+  .day h3{font-family:var(--font-display);font-size:15px;margin:0 0 10px;letter-spacing:-.005em}
+  .day h3 span{color:var(--laser);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-right:8px}
+  .tick{display:flex;gap:11px;align-items:flex-start;padding:9px 0;font-size:15px;cursor:pointer}
+  .tick input{appearance:none;-webkit-appearance:none;flex:0 0 24px;width:24px;height:24px;margin:0;border-radius:7px;border:2px solid rgba(255,255,255,.35);background:transparent;cursor:pointer;position:relative;top:1px}
+  .tick input:checked{background:var(--laser);border-color:var(--laser)}
+  .tick input:checked::after{content:"";position:absolute;inset:0;background:
+     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1a05' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><path d='M4 12.5l5 5L20 6.5'/></svg>") center/16px no-repeat}
+  .tick input:checked + span{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(87,255,0,.5)}
+
+  /* questions */
+  .qs{display:grid;gap:12px}
+  .qs .field span.hint{font-size:12.5px;color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
+
+  .caveat{border-left:3px solid var(--warn);background:rgba(255,255,255,.05);border-radius:0 12px 12px 0;padding:14px 16px;font-size:14px;color:var(--muted)}
+  .caveat strong{color:var(--ink)}
+  footer{margin-top:34px;border-top:1px solid var(--border);padding-top:18px;font-size:12.5px;color:var(--muted)}
+  footer .sig{display:flex;align-items:center;gap:9px;margin-bottom:8px;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--ink)}
+  footer .sig i{width:8px;height:8px;border-radius:2px;background:var(--laser);display:inline-block}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,80px);background:var(--laser);color:#0b1a05;font-weight:800;font-size:14px;padding:12px 18px;border-radius:99px;transition:transform .25s ease;z-index:99;box-shadow:var(--shadow)}
+  .toast.show{transform:translate(-50%,0)}
+
+  @media (max-width:420px){ .out{grid-template-columns:1fr} .stat{min-width:74px} }
+
+  /* printing this hands over a version that doesn't eat ink */
+  @media print{
+    body{background:#fff;color:#101b33}
+    .progress,.copyrow button,.toast,#reset{display:none!important}
+    .card,.camp{background:#fff;border:1px solid #c9d2e3;box-shadow:none}
+    .now{background:#f3fbe9}
+    a{color:#101b33}
+    h1,h2,h3,.wordmark span,.stat .v.green,.out .v.green,.kicker,.camp .tag,.day h3 span{color:#2b5c00}
+    .stat .k,.out .k,label,.lede,.note,.muted{color:#44506b}
+    .steps li::before,.tick input:checked{background:#2b5c00;color:#fff}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" role="status" aria-live="polite">
+  <span>Your progress</span>
+  <span class="bar"><i id="bar"></i></span>
+  <span><b id="count">0</b>/<span id="total">0</span></span>
+</div>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="wordmark"><span class="dot" aria-hidden="true"></span><span class="wm"><span style="color:#fff">instruct</span><span>Brain</span></span></div>
+
+    <p class="kicker">Paid per view · UK · October 2026</p>
+    <h1>Clipping, properly.</h1>
+    <p class="standfirst">One campaign, one week, and no course. This is the honest version: what it pays after fees, what usually kills it, and exactly what to do on day one. Tick things off as you go — this page remembers.</p>
+    <div class="metabar">
+      <span class="pill on">Fees included</span>
+      <span class="pill">UK spelling &amp; GBP</span>
+      <span class="pill">Figures checked 25 Oct 2026</span>
+    </div>
+  </header>
+
+  <section class="now card">
+    <span class="stamp">Do this today</span>
+    <h3>Join one campaign and read its rules twice. Before you cut a single clip.</h3>
+    <p>The campaign is <strong>TV Show Series</strong> on promote.fun. It opened on 24 October with $13,010 and has already committed $5,874 of it — that is roughly <strong>$163 an hour</strong>. At that pace the $7,136 left lasts about <strong>44 hours</strong>. Everything else on this page can wait a day. This can't.</p>
+    <div class="copyrow">
+      <span class="url" id="camplink">https://clipperhub.co/en/c/tv-show-series-pf-tv-.html</span>
+      <button class="green" id="copyBtn" type="button">Copy link</button>
+    </div>
+    <p class="why" style="margin-top:12px">Why this one and not the loud ones: it has <strong>no minimum views</strong> and <strong>no minimum payout</strong>, so every single view pays. On campaigns with a 1,000-view floor, nine out of ten clips from a new account earn nothing at all.</p>
+  </section>
+
+  <section>
+    <h2>The shortlist <em>as it stood</em></h2>
+    <p class="lede">Read from Clipper Hub on 25 October 2026. Pools drain by the hour — treat these as a starting point, then check the live numbers yourself.</p>
+
+    <div class="camps">
+      <article class="camp best">
+        <span class="tag">The pick</span>
+        <h3>TV Show Series · promote.fun</h3>
+        <div class="row">
+          <div class="stat"><div class="k">Per 1,000 views</div><div class="v green">$1.40</div></div>
+          <div class="stat"><div class="k">Minimum views</div><div class="v">None</div></div>
+          <div class="stat"><div class="k">Left in the pot</div><div class="v">$7,136</div></div>
+          <div class="stat"><div class="k">Where it posts</div><div class="v" style="font-size:15px">Instagram</div></div>
+        </div>
+        <p class="note">Opened 24 Oct. 501 approved clips, 4.4 million views, $5,874 already paid out. Average approved clip: 8,782 views. Catch: Instagram only, and its rules are not summarised for you — you have to read the original document.</p>
+      </article>
+
+      <article class="camp">
+        <span class="tag">Backup</span>
+        <h3>Razed · Clipster</h3>
+        <div class="row">
+          <div class="stat"><div class="k">Per 1,000 views</div><div class="v">$2.00</div></div>
+          <div class="stat"><div class="k">Minimum views</div><div class="v">1,000</div></div>
+          <div class="stat"><div class="k">Left in the pot</div><div class="v">$25,000</div></div>
+        </div>
+        <p class="note">Double the rate and the pot is untouched, but a 1,000-view floor means a cold account gets paid for maybe one clip in ten. Worth joining on day three, once you know what your clips average.</p>
+      </article>
+
+      <article class="camp">
+        <span class="tag">Deep pool, busy room</span>
+        <h3>ForgeGUI · Content Rewards</h3>
+        <div class="row">
+          <div class="stat"><div class="k">Per 1,000 views</div><div class="v">$1.00</div></div>
+          <div class="stat"><div class="k">Minimum views</div><div class="v">1,000</div></div>
+          <div class="stat"><div class="k">Left in the pot</div><div class="v">$43,000</div></div>
+          <div class="stat"><div class="k">Clippers in</div><div class="v">3,667</div></div>
+        </div>
+        <p class="note">$43,000 of $230,000 still unspent, so it won't vanish this week — but you are sharing it with nearly four thousand other people. A quieter campaign at a similar rate usually pays better.</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>The money, fees already off</h2>
+    <p class="lede">$1.40 per 1,000 views, converted at 0.748 GBP/USD (23 Oct 2026), minus a 10% platform cut. Some reviews say the cut is 7% — using 10% means these numbers can't flatter themselves.</p>
+    <div class="card calc">
+      <div class="field">
+        <label for="views">Paid views your clips get</label>
+        <input type="number" id="views" value="8782" min="0" step="100" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="cpm">Campaign rate (per 1,000 views)</label>
+        <select id="cpm">
+          <option value="1.00">$1.00 — ForgeGUI</option>
+          <option value="1.40" selected>$1.40 — TV Show Series</option>
+          <option value="2.00">$2.00 — Razed</option>
+        </select>
+      </div>
+      <div class="out">
+        <div><div class="k">Before fees</div><div class="v" id="gross">$12.29</div></div>
+        <div><div class="k">In your pocket</div><div class="v green" id="net">£8.28</div></div>
+      </div>
+      <p class="note" id="calcnote">That is the campaign's average approved clip — 8,782 views. Change the number to see what a different average does.</p>
+      <div class="out" style="grid-template-columns:1fr">
+        <div><div class="k">To earn £100 net you need about</div><div class="v" id="need100">106,000 views</div></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:12px">Nobody can promise you income and anyone who does is selling something. What this pays depends entirely on your average views, and your average views is the only number worth obsessing over.</p>
+  </section>
+
+  <section>
+    <h2>What kills it</h2>
+    <p class="lede">Nearly every person who "tried clipping and it didn't work" hit one of these five.</p>
+    <ul class="kill">
+      <li><strong>Minimum view floors.</strong> A 1,000-view floor means most posts earn nothing. Pick campaigns with no floor for your first week.</li>
+      <li><strong>The pool draining mid-flight.</strong> Money is committed when a clip is approved, not when you post it. Check what's left before you spend an evening editing.</li>
+      <li><strong>Rejection after the views have banked.</strong> Missing hashtag, missing handle tag, your own logo on it, wrong length, clipped from outside their official folder. That is unpaid work you could have avoided in two minutes of reading.</li>
+      <li><strong>Clips that need context.</strong> If it doesn't land in two seconds it dies, no matter how good the moment was.</li>
+      <li><strong>The payout identity.</strong> The money lands in a verified payout account. In the UK that means an adult's PayPal or bank, in that adult's name.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2 style="margin-bottom:14px">The seven days</h2>
+
+    <div class="day">
+      <h3><span>Day 1</span>Join and read</h3>
+      <label class="tick"><input type="checkbox" data-tick id="t1"><span>Open the campaign, press <strong>Open campaign</strong>, sign up with your email</span></label>
+      <label class="tick"><input type="checkbox" data-tick id="t2"><span>Connect the Instagram account you'll post from — it has to be the same account, or the views can't be tracked back to you</span></label>
+      <label class="tick"><input type="checkbox" data-tick id="t3"><span>Read the rules document twice. Write down the hashtag, the tag, the minimum length and the banned edits</span></label>
+    </div>
+
+    <div class="day">
+      <h3><span>Day 2</span>Cut without posting</h3>
+      <label class="tick"><input type="checkbox" data-tick id="t4"><span>Download the official clip folder and pick ten moments that make sense with no sound and no context</span></label>
+      <label class="tick"><input type="checkbox" data-tick id="t5"><span>Edit in CapCut: vertical 9:16, subtitles on, hook in the first two seconds, nothing else added</span></label>
+    </div>
+
+    <div class="day">
+      <h3><span>Day 3</span>Post three, submit three</h3>
+      <label class="tick"><input type="checkbox" data-tick id="t6"><span>Post three clips, then submit all three links in the campaign dashboard the same day</span></label>
+      <label class="tick"><input type="checkbox" data-tick id="t7"><span>Write down which of the three got the first 1,000 views fastest</span></label>
+    </div>
+
+    <div class="day">
+      <h3><span>Days 4–5</span>Same shape, more of it</h3>
+      <label class="tick"><input type="checkbox" data-tick id="t8"><span>Three to five clips a day, made in the shape of whichever clip won on day three</span></label>
+      <label class="tick"><input type="checkbox" data-tick id="t9"><span>Check what's left in the pool before each session. Under 20% left means find the next campaign</span></label>
+    </div>
+
+    <div class="day">
+      <h3><span>Day 6</span>Second campaign</h3>
+      <label class="tick"><input type="checkbox" data-tick id="t10"><span>Join Razed or ForgeGUI, but only if your clips are clearing 1,000 views</span></label>
+    </div>
+
+    <div class="day">
+      <h3><span>Day 7</span>Read your own numbers</h3>
+      <label class="tick"><input type="checkbox" data-tick id="t11"><span>Total paid views ÷ number of clips = your average. That number is the business</span></label>
+      <label class="tick"><input type="checkbox" data-tick id="t12"><span>Drop the format that didn't pay. Do more of the one that did. Then decide whether week two happens</span></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 style="margin-bottom:6px">Before day one, answer these</h2>
+    <p class="lede">Your answers save on this device, so you can come back to them. Nothing is sent anywhere.</p>
+    <div class="qs">
+      <div class="field"><label for="q1">Who is doing this <span class="hint">— name and age</span></label><input type="text" id="q1" data-save placeholder="e.g. Lola, 20"></div>
+      <div class="field"><label for="q2">Whose PayPal or bank does the money land in?</label><input type="text" id="q2" data-save placeholder="Name on the account"></div>
+      <div class="field"><label for="q3">Instagram and TikTok accounts <span class="hint">— public? how many followers?</span></label><input type="text" id="q3" data-save placeholder="e.g. @handle, public, 340 followers"></div>
+      <div class="field"><label for="q4">Budget in £ <span class="hint">— tools, or nil?</span></label><input type="text" id="q4" data-save placeholder="e.g. £0, CapCut free"></div>
+      <div class="field"><label for="q5">Hours a week, and which days can you post?</label><input type="text" id="q5" data-save placeholder="e.g. 6 hours, evenings"></div>
+      <div class="field"><label for="q6">On camera, voice only, or hands and screen?</label><input type="text" id="q6" data-save placeholder="Your call"></div>
+    </div>
+    <div class="copyrow"><button id="reset" type="button">Reset this page</button></div>
+  </section>
+
+  <section>
+    <div class="caveat">
+      <strong>What this page cannot do.</strong> It cannot promise you money, and it cannot tell you what you will earn — that depends on your average views and on how fast the pool drains. Campaign rates, budgets and rules were read on <strong>25 October 2026</strong> and will have changed. Rules are set by the campaign, not by this page: if their document contradicts anything here, their document wins. And the account the money lands in has to be in the name of whoever is legally allowed to hold it.
+    </div>
+  </section>
+
+  <footer>
+    <div class="sig"><i aria-hidden="true"></i><span>instruct<span style="color:var(--laser)">Brain</span></span></div>
+    <p style="margin:0 0 6px">Prepared for Lola · 25 October 2026 · figures in USD as the campaigns publish them, converted to GBP at 0.748.</p>
+    <p style="margin:0">Sources: Clipper Hub campaign pages (live), Whop / Content Rewards terms, promote.fun campaign listings.</p>
+  </footer>
+</div>
+
+<div class="toast" id="toast">Link copied</div>
+
+<script>
+(function(){
+  var KEY = "ib-clipping-v1";
+
+  /* ---- ticks + fields: save, restore, count ---- */
+  var ticks = [].slice.call(document.querySelectorAll("[data-tick]"));
+  var fields = [].slice.call(document.querySelectorAll("[data-save]"));
+  var bar = document.getElementById("bar");
+  var count = document.getElementById("count");
+  document.getElementById("total").textContent = ticks.length;
+
+  function paint(){
+    var done = ticks.filter(function(t){ return t.checked; }).length;
+    count.textContent = done;
+    bar.style.width = (ticks.length ? (done / ticks.length * 100) : 0) + "%";
+  }
+  function save(){
+    var state = { ticks:{}, fields:{} };
+    ticks.forEach(function(t){ state.ticks[t.id] = t.checked; });
+    fields.forEach(function(f){ state.fields[f.id] = f.value; });
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+  function load(){
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch(e){}
+    if (!raw) return;
+    try {
+      var state = JSON.parse(raw) || {};
+      ticks.forEach(function(t){ if (state.ticks && state.ticks[t.id]) t.checked = true; });
+      fields.forEach(function(f){ if (state.fields && state.fields[f.id] != null) f.value = state.fields[f.id]; });
+    } catch(e){}
+  }
+  load(); paint();
+  ticks.forEach(function(t){ t.addEventListener("change", function(){ paint(); save(); }); });
+  fields.forEach(function(f){ f.addEventListener("input", save); });
+
+  document.getElementById("reset").addEventListener("click", function(){
+    ticks.forEach(function(t){ t.checked = false; });
+    fields.forEach(function(f){ f.value = ""; });
+    try { localStorage.removeItem(KEY); } catch(e){}
+    paint();
+    toast("Cleared");
+  });
+
+  /* ---- calculator ---- */
+  var RATE = 0.74804, FEE = 0.10;
+  var vIn = document.getElementById("views"), cIn = document.getElementById("cpm");
+  function money(n, cur){
+    return (cur === "£" ? "£" : "$") + n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function calc(){
+    var views = Math.max(0, Number(vIn.value) || 0);
+    var cpm = Number(cIn.value) || 1.4;
+    var gross = views / 1000 * cpm;
+    var netUsd = gross * (1 - FEE);
+    document.getElementById("gross").textContent = money(gross, "$");
+    document.getElementById("net").textContent = money(netUsd * RATE, "£");
+    var per1000netGbp = cpm * RATE * (1 - FEE);
+    document.getElementById("need100").textContent = per1000netGbp > 0
+      ? Math.round(100 / per1000netGbp * 1000).toLocaleString("en-GB") + " views"
+      : "—";
+  }
+  vIn.addEventListener("input", calc);
+  cIn.addEventListener("change", calc);
+  calc();
+
+  /* ---- copy ---- */
+  function toast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove("show"); }, 1600);
+  }
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    var text = document.getElementById("camplink").textContent.trim();
+    function ok(){ toast("Link copied"); }
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); ok(); } catch(e){ toast("Copy failed — select the link"); }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(ok).catch(fallback);
+    } else { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>
